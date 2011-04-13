@@ -1,0 +1,10 @@
+(load "../data/jazz.lsp")
+(load "libs/vendor/versionspace.lsp")
+(load "libs/create_neg_pos.lsp")
+(load "libs/aq.fas")
+ 
+(print "Start Training")
+(setq JAZZ_K (do-AQ pexamples nexamples))
+(print "End Training")
+(print "JAZZ_K:")
+(print JAZZ_K)

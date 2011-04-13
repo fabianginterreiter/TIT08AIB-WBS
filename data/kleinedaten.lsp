@@ -1,0 +1,3 @@
+(defun get-examples() '( ("EinZimmer" "EG" "Lüftungsheizung" "nein" "erreichbar" "fern" "erreichbar" "ja" "150-200" "unter50" "76-100Jahre" "ja" "Abgelegen" "<3km" "1500-2000" "keine" "Dusche" "ja" "nein" "nein" "nein" "41-50" "nein")
+("2-3Zimmer" "10.Stock" "Lüftungsheizung" "ja" "erreichbar" "nah" "nein" "nein" "201-250" "201-250" "über100" "ja" "Abgelegen" "<3km" "2000-2500" "Küche(alt)" "Badewanne" "ja" "nein" "nein" "nein" "81-90" "nein")
+("EinZimmer" "EG" "Gas-Zentral" "ja" "nah" "fern" "erreichbar" "nein" "301-350" "101-150" "31-50Jahre" "ja" "Wohngebiet" "Zentrum" "1000-1500" "Küche(alt)" "Dusche" "ja" "ja" "ja" "teilmöbliert" "41-50" "ja") ))
