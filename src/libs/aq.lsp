@@ -1,3 +1,5 @@
+(load "libs/vendor/versionspace.fas")
+
 ; Testet ob "element" vom Konzept "k" angenommen wird:
 ; Parameter:
 ;	element : Das zu testende Element
@@ -23,11 +25,12 @@
 ; Parameter:
 ; 	positives: Eine Liste von positiven Trainingsdaten
 ; 	negatives: Eine Liste von negativen Trainingsdaten
+;	k: Konzept Liste welche am Ende zurück gegeben wird (dient der tail-recursion)
 ; Return:
 ;	Konzept
-(defun do-AQ (positives negatives)
+(defun do-AQ-helper (positives negatives k)
 	(cond 
-		((null positives) nil)
+		((null positives) k)
 		(T 
 			(let 
 				(
@@ -35,19 +38,19 @@
 						; Wählt die Beste Generalisation
 						(choose-best-generalisation 
 							; Erstellt den Star
-							(time (create-star (car positives) negatives))
+							(create-star (car positives) negatives)
 						)
 					)
 				)
-				
-				(append 
-					(list s)
-					(do-AQ (remove-covered-elements s(cdr positives)) negatives)
-				)
+				(do-AQ-helper (remove-covered-elements s(cdr positives)) negatives (append (list s) k))
 			)
-			
 		)
 	)
+)
+
+; Nur eine wrapper Funktion um den Algorithmus mit einer leeren Liste zu starten
+(defun do-AQ (positives negatives)
+	(do-AQ-helper positives negatives '())
 )
 
 
@@ -61,6 +64,7 @@
 		((null star) nil)
 		(T (choose-less-stars star))
 	)
+	
 )
 
 ; Löscht die Elemente aus aus einer Liste, für die "element" allgemeiner ist
@@ -112,48 +116,32 @@
 ; Return:
 ; 	Neues G
 (defun create-g (g neg s)
-	(reduce
-		#'(lambda (result h)
-			(cond					
-				(
-					; Ersetze alle H e G, die neg als Beispiel haben und hängt diese an Result
-					(isMoreGeneral h neg)
-					(special-append 
-						(create-specialization h neg s)
-						result 							
+	;(filter-already-contained 
+		(reduce
+			#'(lambda (result h)
+				(cond					
+					(
+						; Ersetze alle H e G, die neg als Beispiel haben und hängt diese an Result
+						(isMoreGeneral h neg)
+						(special-append 
+							(create-specialization h neg s)
+							result
+						)
+					)
+					(
+						; Ansonsten wird H an das Result angehängt
+						T 
+						(special-append 
+							(list h)
+							result 
+						)
 					)
 				)
-				(
-					; Ansonsten wird H an das Result angehängt
-					T 
-					(special-append 
-						(list h)
-						result 							
-					)
-				)
 			)
+			g
+			:initial-value '() ; Result ist zuerst eine leere Liste
 		)
-		g
-		:initial-value '() ; Result ist zuerst eine leere Liste
-	)
-)
-
-(defun special-append (list1 list2)
-	(cond 
-		((null list1) list2)
-		((some 
-			#'(lambda (x)
-				(isMoreGeneral x (car list1))
-			)
-			list2
-		 ) (special-append (cdr list1) list2))
-		(T 
-			(append 
-				(list (car list1)) 
-				(special-append (cdr list1) list2)
-			)
-		)
-	)
+	;)
 )
 
 ; Spezialisiert die Hypothese hyp mit dem negativen Beispiel neg in Abhängigkeit von s.
@@ -186,7 +174,7 @@
 ;	Gefilterte Liste
 (defun filter-already-contained(list)
 	; Löscht Elemente aus einer Liste für die zutrifft,
-	(remove-if
+	(time (remove-if
 		#'(lambda (h)
 			; (Geht hier die komplette Liste (list) durch bis lambda = T)
 			(some 
@@ -201,7 +189,7 @@
 			)
 		)
 		list
-	)
+	))
 )
 
 #| ############################################################################
@@ -238,5 +226,30 @@
 		)
 		list
 		:initial-value (make-list (length (car list)) :initial-element "*")
+	)
+)
+
+; Nur eine wrapper Funktion um mit einer leeren liste zu starten
+(defun special-append (list1 list2)
+	(special-append-helper list1 list2 '())
+)
+
+; Fügt elemente der "list1" an "list2" nur dann wenn es kein element in "list2" gibt welches genereller ist als das element von "list1"
+; Parameter:
+;	list1: Liste von elemente welche an list2 angehangen werden sollen
+;	list2: Liste an die angehangen werden soll
+;	to-list: Resultierende Liste, welche am Ende zurückgegeben wird (dient dazu, um tail-recursion zu garantieren)
+; Return:
+;	Neue Liste mit den angefügten elementen
+(defun special-append-helper (list1 list2 to-list)
+	(cond 
+		((null list1) (append to-list list2))
+		((some 
+			#'(lambda (x)
+				(isMoreGeneral x (car list1))
+			)
+			list2
+		 ) (special-append-helper (cdr list1) list2 to-list))
+		(T (special-append-helper (cdr list1) list2 (append (list (car list1)) to-list)))
 	)
 )

@@ -1,7 +1,7 @@
-﻿(load "libs/vendor/lisp-unit.lisp")
+(load "libs/vendor/lisp-unit.lisp")
 (load "../src/libs/vendor/versionspace.lsp")
 
-(load "../src/libs/aq.lisp")
+(load "../src/libs/aq.lsp")
 
 (use-package :lisp-unit)
 

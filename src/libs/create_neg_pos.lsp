@@ -25,6 +25,18 @@
 (defun delete-last-element (list)
 	(reverse (cdr (reverse list)))
 )
+
+(defun test-all (k examples)
+	(cond 
+		((null examples) nil)
+		(
+			(print "Next Test")
+			(print (last (car examples)))
+			(print (is-element-good (delete-last-element (car examples)) k))
+			(test-all k (cdr examples))
+		)
+	)
+)
 	
 
 (setq examples (get-examples))

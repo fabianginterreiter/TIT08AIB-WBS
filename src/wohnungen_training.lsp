@@ -1,0 +1,10 @@
+(load "../data/gesamt.lsp")
+(load "libs/create_neg_pos.lsp")
+(load "libs/aq.fas")
+ 
+(print "Start Training")
+(setq K (do-AQ pexamples nexamples))
+;(print (special-append '((1 2 3 4) (6 7 8 9) (6 "*" 8 9)) '((3 4 "*" 5) (6 "*" 8 9))))
+(print "End Training")
+(print "K:")
+(print K)
