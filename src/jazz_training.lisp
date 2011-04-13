@@ -1,7 +1,7 @@
-(load "../data/jazz.lsp")
+(load "../data/gesamt.lisp")
 (load "libs/vendor/versionspace.lsp")
-(load "libs/create_neg_pos.lsp")
-(load "libs/aq.fas")
+(load "libs/create_neg_pos.lisp")
+(load "libs/aq.lisp")
  
 (print "Start Training")
 (setq JAZZ_K (do-AQ pexamples nexamples))

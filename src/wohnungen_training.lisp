@@ -1,7 +1,7 @@
-(load "../data/gesamt.lsp")
+(load "../data/gesamt.lisp")
 (load "libs/vendor/versionspace.lsp")
-(load "libs/create_neg_pos.lsp")
-(load "libs/aq.lsp")
+(load "libs/create_neg_pos.lisp")
+(load "libs/aq.lisp")
  
 (print "Start Training")
 (setq K (do-AQ pexamples nexamples))
